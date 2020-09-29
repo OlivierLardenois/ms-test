@@ -12,6 +12,16 @@
         "reveal": "silent",
         "clear": true
       }
+    },
+    {
+      "label": "compile user-service",
+      "type": "shell",
+      "problemMatcher": ["$tsc"],
+      "command": "cd user-service && yarn compile",
+      "presentation": {
+        "reveal": "silent",
+        "clear": true
+      }
     }
   ]
 }

@@ -15,5 +15,16 @@
       "program": "${workspaceFolder}/gateway-service/src/server.ts",
       "skipFiles": ["<node_internals>/**"]
     }
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "user-server",
+      "envFile": "${workspaceFolder}/user-service/.env",
+      "outFiles": ["${workspaceFolder}/user-service/dist/**/*.js"],
+      "outputCapture": "std",
+      "preLaunchTask": "compile user-service",
+      "program": "${workspaceFolder}/user-service/src/server.ts",
+      "skipFiles": ["<node_internals>/**"]
+    }
   ]
 }
