@@ -22,6 +22,16 @@
         "reveal": "silent",
         "clear": true
       }
+    },
+    {
+      "label": "compile security-service",
+      "type": "shell",
+      "problemMatcher": ["$tsc"],
+      "command": "cd security-service && yarn compile",
+      "presentation": {
+        "reveal": "silent",
+        "clear": true
+      }
     }
   ]
 }
