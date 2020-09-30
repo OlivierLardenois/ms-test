@@ -40,16 +40,16 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "[User-service] Jest File (INTEGRATION)",
+      "name": "Jest File (INTEGRATION)",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "args": [
-        "${fileBasenameNoExtension}",
+        "${fileDirname}/${fileBasenameNoExtension}",
         "--config",
-        "${workspaceFolder}/user-service/src/__tests__/jest.config.js",
+        "${fileDirname}/jest.config.js",
         "--setupFiles",
         "dotenv/config"
       ],
-      "cwd": "${workspaceFolder}/user-service",
+      "cwd": "${fileDirname}/../..",
       "env": { "TEST_DEBUG": "true" },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
