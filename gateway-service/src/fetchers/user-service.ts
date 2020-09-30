@@ -2,10 +2,9 @@ import fetch from 'node-fetch';
 
 class UserFetcher {
   public async me(userId: string) {
-    const response = await await fetch(
-      `${process.env.USER_SERVICE_URL!}/me?userId=${userId}`,
-      { headers: { Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}` } }
-    );
+    const response = await fetch(`${process.env.USER_SERVICE_URL!}/me?userId=${userId}`, {
+      headers: { Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}` },
+    });
     if (!response.ok) throw new Error();
 
     const { ok, user } = (await response.json()) as { ok: boolean; user: any };
@@ -14,7 +13,7 @@ class UserFetcher {
   }
 
   public async login(email: string, password: string) {
-    const response = await await fetch(`${process.env.USER_SERVICE_URL!}/login`, {
+    const response = await fetch(`${process.env.USER_SERVICE_URL!}/login`, {
       method: 'post',
       body: JSON.stringify({ email, password }),
       headers: {

@@ -36,6 +36,25 @@
       "preLaunchTask": "compile security-service",
       "program": "${workspaceFolder}/security-service/src/server.ts",
       "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "[User-service] Jest File (INTEGRATION)",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "${fileBasenameNoExtension}",
+        "--config",
+        "${workspaceFolder}/user-service/src/__tests__/jest.config.js",
+        "--setupFiles",
+        "dotenv/config"
+      ],
+      "cwd": "${workspaceFolder}/user-service",
+      "env": { "TEST_DEBUG": "true" },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": { "program": "${workspaceFolder}/node_modules/jest/bin/jest" }
     }
   ]
 }

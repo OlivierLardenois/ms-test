@@ -2,17 +2,14 @@ import fetch from 'node-fetch';
 
 class SecurityFetcher {
   public async verifyUserToken(token: string) {
-    const response = await await fetch(
-      `${process.env.SECURITY_SERVICE_URL!}/verifyUserToken`,
-      {
-        method: 'post',
-        body: JSON.stringify({ token }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}`,
-        },
-      }
-    );
+    const response = await fetch(`${process.env.SECURITY_SERVICE_URL!}/verifyUserToken`, {
+      method: 'post',
+      body: JSON.stringify({ token }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}`,
+      },
+    });
     if (!response.ok) throw new Error();
 
     const { ok, userId } = (await response.json()) as { ok: boolean; userId: string };
@@ -21,7 +18,7 @@ class SecurityFetcher {
   }
 
   public async userToken(userId: string) {
-    const response = await await fetch(`${process.env.SECURITY_SERVICE_URL!}/userToken`, {
+    const response = await fetch(`${process.env.SECURITY_SERVICE_URL!}/userToken`, {
       method: 'post',
       body: JSON.stringify({ userId }),
       headers: {

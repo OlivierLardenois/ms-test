@@ -1,7 +1,7 @@
 import knex from 'knex';
 
 const db = knex({
-  client: 'postgres',
+  client: 'pg',
   connection: process.env.POSTGRES_URI,
 });
 
@@ -18,17 +18,16 @@ export interface UserModel {
 }
 
 class UserRepository {
-  private db: knex.QueryBuilder<UserModel, UserModel[]>;
-  constructor() {
-    this.db = db<UserModel, UserModel[]>('users');
+  private queryBuilder() {
+    return db<UserModel, UserModel[]>('users');
   }
 
   findByEmail(email: string) {
-    return this.db.where('email', email).first();
+    return this.queryBuilder().where('email', email).first();
   }
 
   findById(userId: string) {
-    return this.db.where('userId', userId).first();
+    return this.queryBuilder().where('userId', userId).first();
   }
 }
 

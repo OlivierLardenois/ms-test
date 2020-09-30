@@ -40,7 +40,7 @@ app.post<{}, {}, { email: string; password: string }>('/login', async (req, res)
   if (!match) {
     // TODO: handle logger
     // logger.warn('Invalid password');
-    return res.status(400).send({ ok: false, userId: '' });
+    return res.send({ ok: false, userId: '' });
   }
 
   return res.json({ ok: true, userId: user.userId });
