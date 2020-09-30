@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get<{}, {}, {}, { userId: string }>('/userToken', ({ query: { userId } }, res) => {
+app.post<{}, {}, { userId: string }>('/userToken', ({ body: { userId } }, res) => {
   if (!userId) res.json({ ok: false, token: '' });
 
   const token = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET!, {
