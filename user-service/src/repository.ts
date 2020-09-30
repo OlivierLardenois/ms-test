@@ -24,7 +24,7 @@ class UserRepository {
   }
 
   findByEmail(email: string) {
-    return this.db.where('email', email).first();
+    return this.db.where('email', email).first('*');
   }
 }
 

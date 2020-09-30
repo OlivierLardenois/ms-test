@@ -15,17 +15,17 @@ app.post<{}, {}, { email: string; password: string }>('/login', async (req, res)
   if (!user) {
     // TODO: handle logger
     // logger.warn('User not found');
-    return res.send({ userID: null });
+    return res.send({ ok: false, userId: '' });
   }
 
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
     // TODO: handle logger
     // logger.warn('Invalid password');
-    return res.send({ userID: null });
+    return res.status(400).send({ ok: false, userId: '' });
   }
 
-  return res.json({ userID: user.userId });
+  return res.json({ ok: true, userId: user.userId });
 });
 
 app.get('/me', (_, res) => {
