@@ -26,10 +26,10 @@ app.post<{}, {}, { token: string }>('/verifyUserToken', (req, res) => {
   } catch (error) {
     // TODO: handle logger
     // logger.warn('Cannot verify userToken');
-    return res.send({ ok: false, token: '' });
+    return res.send({ ok: false, userId: '' });
   }
 
-  return res.send({ ok: true, token: payload.userId });
+  return res.send({ ok: true, userId: payload.userId });
 });
 
 app.listen(port, () => {

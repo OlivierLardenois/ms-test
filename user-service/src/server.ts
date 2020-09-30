@@ -28,8 +28,9 @@ app.post<{}, {}, { email: string; password: string }>('/login', async (req, res)
   return res.json({ ok: true, userId: user.userId });
 });
 
-app.get('/me', (_, res) => {
-  res.send('Hello World!');
+app.get<{}, {}, {}, { userId: string }>('/me', async (req, res) => {
+  const user = await userRepository.findById(req.query.userId);
+  return user ? res.json({ ok: true, user }) : res.json({ ok: false, user: null });
 });
 
 app.listen(port, () => {
