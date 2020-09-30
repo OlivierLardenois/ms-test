@@ -1,69 +1,57 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import fetch from 'node-fetch';
+import securityFetcher from './fetchers/security-service';
+import userFetcher from './fetchers/user-service';
 
 const port = 8000;
 
-// TODO: Handle res status 400 on fetch
+// TODO: Better error handling
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get('/me', async (req, res) => {
+app.get('/me', async (req, res, next) => {
   const { session } = req.cookies as { session?: string };
   if (!session) return res.status(400).send('NOT_LOGGED_IN');
 
-  const securityRes = (await (
-    await fetch(`${process.env.SECURITY_SERVICE_URL!}/verifyUserToken`, {
-      method: 'post',
-      body: JSON.stringify({ token: req.cookies.session }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}`,
-      },
-    })
-  ).json()) as { ok: boolean; userId: string };
-  if (!securityRes.ok) return res.status(400).send('NOT_LOGGED_IN');
+  // TODO: Convert it to asyncHandler : https://stackoverflow.com/questions/51391080/handling-errors-in-express-async-middleware
+  try {
+    const userId = await securityFetcher.verifyUserToken(req.cookies.session);
+    const user = await userFetcher.me(userId);
 
-  const userRes = (await (
-    await fetch(`${process.env.USER_SERVICE_URL!}/me?userId=${securityRes.userId}`, {
-      headers: { Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}` },
-    })
-  ).json()) as { ok: boolean; user: any };
-  if (!userRes.ok) return res.status(400).send('NO_SUCH_USER');
-
-  return res.json({ user: userRes.user });
+    return res.json({ user });
+  } catch (err) {
+    return next(err);
+  }
 });
 
-app.post<{}, {}, { email: string; password: string }>('/login', async (req, res) => {
-  const userRes = (await (
-    await fetch(`${process.env.USER_SERVICE_URL!}/login`, {
-      method: 'post',
-      body: JSON.stringify({ email: req.body.email, password: req.body.password }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}`,
-      },
-    })
-  ).json()) as { ok: boolean; userId: string };
-  if (!userRes.ok) return res.status(400).send('INVALID_CREDENTIALS');
+app.post<{}, {}, { email: string; password: string }>(
+  '/login',
+  async (req, res, next) => {
+    // TODO: Convert it to asyncHandler : https://stackoverflow.com/questions/51391080/handling-errors-in-express-async-middleware
+    try {
+      const userId = await userFetcher.login(req.body.email, req.body.password);
+      const token = await securityFetcher.userToken(userId);
 
-  const securityRes = (await (
-    await fetch(`${process.env.SECURITY_SERVICE_URL!}/userToken`, {
-      method: 'post',
-      body: JSON.stringify({ userId: userRes.userId }),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}`,
-      },
-    })
-  ).json()) as { ok: boolean; token: string };
-  if (!securityRes.ok) return res.status(500).send('SERVER_ERROR');
+      return res.cookie('session', token).json({ token });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
 
-  return res.json({ token: securityRes.token });
+// TODO: Error middleware
+app.use(function (
+  err: Error,
+  _req: express.Request,
+  res: express.Response,
+  _next: express.NextFunction
+) {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 app.listen(port, () => {

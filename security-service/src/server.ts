@@ -15,7 +15,7 @@ function requiredAuthorization(
     authorization.split(' ')[0] !== 'Bearer' ||
     authorization.split(' ')[1] !== process.env.GATEWAY_AUTHORIZATION_BEARER
   ) {
-    return res.status(403).json({});
+    return res.status(403).send();
   }
 
   return next();
