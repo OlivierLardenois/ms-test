@@ -5,9 +5,27 @@ import userRepository from './repository';
 
 const port = 8001;
 
+function requiredAuthorization(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  const authorization = req.get('Authorization') as String | undefined;
+  if (
+    !authorization ||
+    authorization.split(' ')[0] !== 'Bearer' ||
+    authorization.split(' ')[1] !== process.env.GATEWAY_AUTHORIZATION_BEARER
+  ) {
+    return res.status(403).json({});
+  }
+
+  return next();
+}
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requiredAuthorization);
 
 app.post<{}, {}, { email: string; password: string }>('/login', async (req, res) => {
   const { email, password } = req.body;
