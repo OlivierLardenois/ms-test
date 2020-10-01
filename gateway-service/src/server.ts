@@ -10,7 +10,6 @@ const port = 8000;
 
 // TODO: Create a typing module (for route response, user model)
 // TODO: Utils module?
-// TODO: Test
 // TODO: Do not forget other MS
 // TODO: envfile docker-compose?
 

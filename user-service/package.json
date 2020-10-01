@@ -4,7 +4,8 @@
   "main": "dist/server.js",
   "license": "MIT",
   "scripts": {
-    "compile": "rm -rf dist && tsc"
+    "compile": "rm -rf dist && tsc",
+    "tests:integration": "jest --config src/__tests__/jest.config.js"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
