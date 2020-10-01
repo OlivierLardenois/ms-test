@@ -27,11 +27,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requiredAuthorization);
 
 app.post<{}, {}, { userId: string }>('/userToken', ({ body: { userId } }, res) => {
-  if (!userId) return res.json({ ok: false, token: '' });
+  if (!userId) {
+    console.warn('Missing userId');
+    return res.json({ ok: false, token: '' });
+  }
 
   const token = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET!, {
     expiresIn: '15m',
   });
+
+  console.log('Successfully sign user token');
   return res.json({ ok: true, token });
 });
 
@@ -42,14 +47,14 @@ app.post<{}, {}, { token: string }>('/verifyUserToken', (req, res) => {
       userId: string;
     };
   } catch (error) {
-    // TODO: handle logger
-    // logger.warn('Cannot verify userToken');
+    console.warn('Cannot verify userToken');
     return res.send({ ok: false, userId: '' });
   }
 
+  console.log('Successfully verify user token');
   return res.send({ ok: true, userId: payload.userId });
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Security-service listening at http://localhost:${port}`);
 });

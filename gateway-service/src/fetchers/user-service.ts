@@ -5,11 +5,16 @@ class UserFetcher {
     const response = await fetch(`${process.env.USER_SERVICE_URL!}/me?userId=${userId}`, {
       headers: { Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}` },
     });
-    if (!response.ok) throw new Error();
+    if (!response.ok) {
+      console.error('[me] :', JSON.stringify(response));
+      throw new Error();
+    }
 
     const { ok, user } = (await response.json()) as { ok: boolean; user: any };
-    if (!ok) throw new Error();
-    else return user;
+    if (!ok) {
+      console.warn('Me failed');
+      throw new Error();
+    } else return user;
   }
 
   public async login(email: string, password: string) {
@@ -21,11 +26,16 @@ class UserFetcher {
         Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}`,
       },
     });
-    if (!response.ok) throw new Error();
+    if (!response.ok) {
+      console.error('[login] :', JSON.stringify(response));
+      throw new Error();
+    }
 
     const { ok, userId } = (await response.json()) as { ok: boolean; userId: string };
-    if (!ok) throw new Error();
-    else return userId;
+    if (!ok) {
+      console.warn('Login failed');
+      throw new Error();
+    } else return userId;
   }
 }
 

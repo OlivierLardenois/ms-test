@@ -31,26 +31,31 @@ app.post<{}, {}, { email: string; password: string }>('/login', async (req, res)
   const { email, password } = req.body;
   const user = await userRepository.findByEmail(email);
   if (!user) {
-    // TODO: handle logger
-    // logger.warn('User not found');
+    console.warn('User not found');
     return res.send({ ok: false, userId: '' });
   }
 
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
-    // TODO: handle logger
-    // logger.warn('Invalid password');
+    console.warn('Invalid password');
     return res.send({ ok: false, userId: '' });
   }
 
+  console.info('Successfully login user');
   return res.json({ ok: true, userId: user.userId });
 });
 
 app.get<{}, {}, {}, { userId: string }>('/me', async (req, res) => {
   const user = await userRepository.findById(req.query.userId);
-  return user ? res.json({ ok: true, user }) : res.json({ ok: false, user: null });
+  if (!user) {
+    console.warn('User not found');
+    return res.json({ ok: false, user: null });
+  }
+
+  console.info('Successfully retrieve me user');
+  return res.json({ ok: true, user });
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`User-service listening at http://localhost:${port}`);
 });
