@@ -4,10 +4,8 @@ services:
   db:
     image: postgres
     container_name: 'riper_user_postgres'
-    environment:
-      POSTGRES_PASSWORD: 'mysecretpassword'
-      POSTGRES_USER: 'postgres'
-      POSTGRES_DB: 'postgres'
+    env_file:
+      - ./user-service/.env.prod
     volumes:
       - './bin/:/docker-entrypoint-initdb.d/'
     networks:
@@ -17,27 +15,23 @@ services:
     build: ./gateway-service
     ports:
       - '8000:8000'
-    environment:
-      USER_SERVICE_URL: 'http://user-service:8001'
-      SECURITY_SERVICE_URL: 'http://security-service:8002'
-      GATEWAY_AUTHORIZATION_BEARER: 'authorizationBearer'
+    env_file:
+      - ./gateway-service/.env.prod
     networks:
       - all
 
   user-service:
     build: ./user-service
-    environment:
-      POSTGRES_URI: 'postgresql://postgres:mysecretpassword@db:5432/postgres'
-      GATEWAY_AUTHORIZATION_BEARER: 'authorizationBearer'
+    env_file:
+      - ./user-service/.env.prod
     networks:
       - all
       - user-service
 
   security-service:
     build: ./security-service
-    environment:
-      ACCESS_TOKEN_SECRET: 'secret'
-      GATEWAY_AUTHORIZATION_BEARER: 'authorizationBearer'
+    env_file:
+      - ./security-service/.env.prod
     networks:
       - all
 
