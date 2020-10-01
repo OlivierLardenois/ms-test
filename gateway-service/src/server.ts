@@ -14,6 +14,7 @@ const port = 8000;
 // TODO: Better logger
 // TODO: Improve error middleware
 // TODO: Do not forget other MS
+// TODO: envfile docker-compose?
 
 const app = express();
 app.use(bodyParser.json());

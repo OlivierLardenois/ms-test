@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres
+    container_name: 'riper_user_postgres'
+    environment:
+      POSTGRES_PASSWORD: 'mysecretpassword'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_DB: 'postgres'
+    volumes:
+      - './bin/:/docker-entrypoint-initdb.d/'
+    networks:
+      - user-service
+
+  gateway-service:
+    build: ./gateway-service
+    ports:
+      - '8000:8000'
+    environment:
+      USER_SERVICE_URL: 'http://user-service:8001'
+      SECURITY_SERVICE_URL: 'http://security-service:8002'
+      GATEWAY_AUTHORIZATION_BEARER: 'authorizationBearer'
+    networks:
+      - all
+
+  user-service:
+    build: ./user-service
+    environment:
+      POSTGRES_URI: 'postgresql://postgres:mysecretpassword@db:5432/postgres'
+      GATEWAY_AUTHORIZATION_BEARER: 'authorizationBearer'
+    networks:
+      - all
+      - user-service
+
+  security-service:
+    build: ./security-service
+    environment:
+      ACCESS_TOKEN_SECRET: 'secret'
+      GATEWAY_AUTHORIZATION_BEARER: 'authorizationBearer'
+    networks:
+      - all
+
+networks:
+  user-service:
+    driver: bridge
+  all:
+    driver: bridge

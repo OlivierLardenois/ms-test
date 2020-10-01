@@ -12,4 +12,4 @@ CREATE TABLE Users (
 );
 
 
-INSERT INTO users(birthdate, email, firstname, lastname, password, "phoneNumber") VALUES ('1994/12/15', 'olivier@test.com', 'olivier', 'lardenois', 'ilfauthachécepassword', '0606060606');
+INSERT INTO users(birthdate, email, firstname, lastname, password, "phoneNumber") VALUES ('1994/12/15', 'olivier@test.com', 'olivier', 'lardenois', '$2a$10$32dV/ubzdGW3Ua2bn4o7/ew6x3Rr7pen5YZGwQ5veslIVUxyoCppm', '0606060606');
