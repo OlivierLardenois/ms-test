@@ -55,8 +55,8 @@ app.use(function (
   res: express.Response,
   _next: express.NextFunction
 ) {
-  console.error(err);
-  res.status(500).send('Something broke!');
+  console.error('[Gateway-service]', err);
+  res.status(500).send('Server Error');
 });
 
 app.listen(port, () => {

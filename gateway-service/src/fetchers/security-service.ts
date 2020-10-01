@@ -10,16 +10,11 @@ class SecurityFetcher {
         Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}`,
       },
     });
-    if (!response.ok) {
-      console.error('[verifyUserToken] :', JSON.stringify(response));
-      throw new Error();
-    }
+    if (!response.ok) throw new Error(await response.text());
 
     const { ok, userId } = (await response.json()) as { ok: boolean; userId: string };
-    if (!ok) {
-      console.warn('VerifyUserToken failed');
-      throw new Error();
-    } else return userId;
+    if (!ok) throw new Error('VerifyUserToken');
+    else return userId;
   }
 
   public async userToken(userId: string) {
@@ -31,16 +26,11 @@ class SecurityFetcher {
         Authorization: `Bearer ${process.env.GATEWAY_AUTHORIZATION_BEARER}`,
       },
     });
-    if (!response.ok) {
-      console.error('[userToken] :', JSON.stringify(response));
-      throw new Error();
-    }
+    if (!response.ok) throw new Error(await response.text());
 
     const { ok, token } = (await response.json()) as { ok: boolean; token: string };
-    if (!ok) {
-      console.warn('UserToken failed');
-      throw new Error();
-    } else return token;
+    if (!ok) throw new Error('UserToken failed');
+    else return token;
   }
 }
 

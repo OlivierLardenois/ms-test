@@ -15,7 +15,8 @@ function requiredAuthorization(
     authorization.split(' ')[0] !== 'Bearer' ||
     authorization.split(' ')[1] !== process.env.GATEWAY_AUTHORIZATION_BEARER
   ) {
-    return res.status(403).send();
+    console.warn('Forbidden access to secutiry-service')
+    return res.status(403).send('FORBIDDEN');
   }
 
   return next();
@@ -48,11 +49,22 @@ app.post<{}, {}, { token: string }>('/verifyUserToken', (req, res) => {
     };
   } catch (error) {
     console.warn('Cannot verify userToken');
-    return res.send({ ok: false, userId: '' });
+    return res.json({ ok: false, userId: '' });
   }
 
   console.log('Successfully verify user token');
-  return res.send({ ok: true, userId: payload.userId });
+  return res.json({ ok: true, userId: payload.userId });
+});
+
+// Must be at the end of the middleware stack
+app.use(function (
+  err: Error,
+  _req: express.Request,
+  res: express.Response,
+  _next: express.NextFunction
+) {
+  console.error('[Security-service]', err);
+  res.status(500).send('Security-service server error!');
 });
 
 app.listen(port, () => {
