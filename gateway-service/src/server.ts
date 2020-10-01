@@ -8,11 +8,6 @@ import { GenericError } from './utils/errors';
 
 const port = 8000;
 
-// TODO: Create a typing module (for route response, user model)
-// TODO: Utils module?
-// TODO: Do not forget other MS
-// TODO: envfile docker-compose?
-
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
