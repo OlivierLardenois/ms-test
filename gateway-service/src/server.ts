@@ -4,15 +4,13 @@ import express from 'express';
 import securityFetcher from './fetchers/security-service';
 import userFetcher from './fetchers/user-service';
 import asyncHandler from './utils/asyncHandler';
+import { GenericError } from './utils/errors';
 
 const port = 8000;
 
-// TODO: Better error handling
 // TODO: Create a typing module (for route response, user model)
 // TODO: Utils module?
 // TODO: Test
-// TODO: Better logger
-// TODO: Improve error middleware
 // TODO: Do not forget other MS
 // TODO: envfile docker-compose?
 
@@ -56,7 +54,12 @@ app.use(function (
   _next: express.NextFunction
 ) {
   console.error('[Gateway-service]', err);
-  res.status(500).send('Server Error');
+  if (err instanceof GenericError) {
+    const statusCode = GenericError.errorCodeMapper(err.code);
+    return res.status(statusCode).send(err.code);
+  }
+
+  return res.status(500).send('SERVER_ERROR');
 });
 
 app.listen(port, () => {

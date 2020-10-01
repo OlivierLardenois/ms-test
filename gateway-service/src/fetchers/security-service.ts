@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { GenericError } from '../utils/errors';
 
 class SecurityFetcher {
   public async verifyUserToken(token: string) {
@@ -13,7 +14,7 @@ class SecurityFetcher {
     if (!response.ok) throw new Error(await response.text());
 
     const { ok, userId } = (await response.json()) as { ok: boolean; userId: string };
-    if (!ok) throw new Error('VerifyUserToken');
+    if (!ok) throw new GenericError('UNKNOWN_USER', 'VerifyUserToken failed');
     else return userId;
   }
 
@@ -29,7 +30,7 @@ class SecurityFetcher {
     if (!response.ok) throw new Error(await response.text());
 
     const { ok, token } = (await response.json()) as { ok: boolean; token: string };
-    if (!ok) throw new Error('UserToken failed');
+    if (!ok) throw new GenericError('UNKNOWN_USER', 'UserToken failed');
     else return token;
   }
 }

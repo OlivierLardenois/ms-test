@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { GenericError } from '../utils/errors';
 
 class UserFetcher {
   public async me(userId: string) {
@@ -8,7 +9,7 @@ class UserFetcher {
     if (!response.ok) throw new Error(await response.text());
 
     const { ok, user } = (await response.json()) as { ok: boolean; user: any };
-    if (!ok) throw new Error('Me failed');
+    if (!ok) throw new GenericError('UNKNOWN_USER', 'Me failed');
     else return user;
   }
 
@@ -24,7 +25,7 @@ class UserFetcher {
     if (!response.ok) throw new Error(await response.text());
 
     const { ok, userId } = (await response.json()) as { ok: boolean; userId: string };
-    if (!ok) throw new Error('Login failed');
+    if (!ok) throw new GenericError('LOGIN_FAILED', 'Login failed');
     else return userId;
   }
 }
